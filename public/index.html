@@ -1,213 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>Controle de Luz</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <section class="menu">
+    <section class="horatemp">
+        <div id="timeContainer">
+            <!-- Exibir Hora -->
+            <div id="currentTime">Carregando hora...</div>
 
-    <h1>Controle de Luz</h1>
-
-    <button id="powerButton">Ligar</button>
-
-    <div class="slider-container">
-        <input type="range" min="0" max="255" value="128" id="intensitySlider" disabled>
+            <!-- Exibir Temperatura -->
+            <div id="temperatureDisplay">0°C</div>
+        </div>    
+    </section>
+    <div id="greetingContainer">
+        <!-- Saudação e Ícone -->
+        <div id="timeOfDay">Bom dia!</div>
+        <div id="sunMoonIcon">☀️</div>
     </div>
+        <div id="columns">
+            <!-- Coluna 1: Informações -->
+            <div id="infoColumn">
+                <h2>Informações</h2>
+                <div id="status">Pronto para ouvir...</div>
+                <div id="spokenCommand">Você disse: </div>           
+            </div>
+            <button id="voiceControlButton"><img src="img/micicon.png" alt=""></button>
+        </section>
+        <main>
+            <!-- Coluna 2: Imagens e Botões de Ligar/Desligar -->
+            <div id="controlColumn">
+                <h2>Controle de Luz</h2>
+                <img src="img/cozinhasala.jpeg" alt="Imagem Casa" id="casaImagem">
+                <img src="img/quartobanheiro.jpeg" alt="Imagem Casa" id="casaImagem">
+                <!-- Botões para ligar/desligar LEDs -->
+                <div id="powerButtons">
+                    <button id="powerButtonQuarto">Ligar LED Quarto</button>
+                    <button id="powerButtonSala">Ligar LED Sala</button>
+                    <button id="powerButtonBanheiro">Ligar LED Banheiro</button>
+                    <button id="powerButtonCozinha">Ligar LED Cozinha</button>
+                </div>
+            </div>
+            <!-- Coluna 3: Controles de Música, Voz e Acalmar -->
+            <div id="musicVoiceColumn">
+                <h2>Controles</h2>
+                <!-- Botão para controlar a música -->
+                <button id="playPauseMusic">Tocar Música</button>
+                <input type="range" id="volumeControl" value="50" max="100"> <!-- Controle de volume -->
 
-    <button id="voiceControlButton">Ativar Controle por Voz</button>
+                <!-- Botão para acalmar -->
+                <button id="acalmarButton">Acalmar</button>
 
-    <button id="notifyBtn">Enviar Notificação</button>
+                <!-- Botão para ativar o controle por voz -->
+                
+            </div>
+        </div>
+    </main>
+
+    <script src="controleLuz.js"></script>
+    <script src="controleVoz.js"></script>
+    <script src="controleMusica.js"></script>
+    <script src="controleHoraTemperatura.js"></script>
     <script>
-        document.getElementById('notifyBtn').onclick = function() {
-            fetch('/send-notification', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Notificação enviada com sucesso!');
-                } else {
-                    alert('Erro ao enviar notificação: ' + data.error);
-                }
-            })
-            .catch(error => {
-                alert('Erro: ' + error.message);
-            });
-        };
+        document.addEventListener('DOMContentLoaded', function () {
+            const acalmarButton = document.getElementById('acalmarButton');
+            const statusDisplay = document.getElementById('status');
 
-    </script>
+            // Envia a notificação quando o botão "Acalmar" for clicado
+            acalmarButton.addEventListener('click', function () {
+                statusDisplay.textContent = 'Enviando notificação...';
 
-    <div id="status">Pronto para ouvir...</div>
-    <div id="spokenCommand">Você disse: </div>
-
-    <script>
-        const powerButton = document.getElementById('powerButton');
-        const slider = document.getElementById('intensitySlider');
-        const voiceControlButton = document.getElementById('voiceControlButton');
-        const statusDisplay = document.getElementById('status');
-        const spokenCommandDisplay = document.getElementById('spokenCommand');
-        let isLightOn = false;
-
-        // Função para enviar requisição para o servidor
-        function sendRequest(path, data) {
-            fetch(path, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
+                fetch('/send-notification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Resposta do servidor:', data.status);
+                    if (data.success) {
+                        statusDisplay.textContent = 'Notificação enviada com sucesso!';
+                    } else {
+                        statusDisplay.textContent = 'Erro ao enviar notificação.';
+                    }
                 })
-                .catch((error) => {
-                    console.error('Erro:', error);
+                .catch(error => {
+                    console.error('Erro ao enviar notificação:', error);
+                    statusDisplay.textContent = 'Erro ao enviar notificação.';
                 });
-        }
+            });
 
-        // Função para ligar a luz
-        function turnOnLight() {
-            if (!isLightOn) {
-                isLightOn = true;
-                powerButton.textContent = 'Desligar';
-                slider.disabled = false;  // Habilita o controle de intensidade
-                sendRequest('/set-power', { power: 'on' });  // Envia comando para ligar o LED
-                console.log('Luz ligada');
-            }
-        }
+            // Função para atualizar a hora, saudação e temperatura
+            function updateTimeAndGreeting() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
 
-        // Função para desligar a luz
-        function turnOffLight() {
-            if (isLightOn) {
-                isLightOn = false;
-                powerButton.textContent = 'Ligar';
-                slider.disabled = true;   // Desabilita o controle de intensidade
-                sendRequest('/set-power', { power: 'off' }); // Envia comando para desligar o LED
-                console.log('Luz desligada');
-            }
-        }
+                const timeString = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+                document.getElementById('currentTime').textContent = timeString;
 
-        // Evento de clique no botão de ligar/desligar
-        powerButton.addEventListener('click', function () {
-            if (isLightOn) {
-                turnOffLight();
-            } else {
-                turnOnLight();
-            }
-        });
+                let greeting = '';
+                let icon = '';
 
-        // Altera a intensidade da luz
-        slider.addEventListener('input', function () {
-            const intensity = slider.value;
-            if (isLightOn) {
-                sendRequest('/set-intensity', { intensity: intensity });
-            }
-        });
-
-        // Controle por voz
-        voiceControlButton.addEventListener('click', function () {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'pt-BR'; // Define o idioma para português
-
-            recognition.onstart = function () {
-                statusDisplay.textContent = 'Escutando...'; // Feedback que está ouvindo
-            };
-
-            recognition.onresult = function (event) {
-                const command = event.results[0][0].transcript.toLowerCase();
-                console.log('Comando de voz captado:', command); // Log para depuração
-                spokenCommandDisplay.textContent = 'Você disse: ' + command; // Mostra o comando reconhecido
-
-                // Verifica o comando de voz
-                if (command.includes('desligar')) { // Verificar "desligar" primeiro
-                    console.log('Comando para desligar a luz detectado');
-                    turnOffLight(); // Desligar a luz
-                } else if (command.includes('ligar')) {
-                    console.log('Comando para ligar a luz detectado');
-                    turnOnLight(); // Ligar a luz
-                } else if (command.includes('pisque')) {
-                    // Mapeamento de números por extenso para valores numéricos
-                    const numberWords = {
-                        'uma': 1, 'duas': 2, 'três': 3, 'quatro': 4, 'cinco': 5,
-                        'seis': 6, 'sete': 7, 'oito': 8, 'nove': 9, 'dez': 10
-                    };
-
-                    // Expressão regular para capturar números por extenso ou dígitos
-                    const matches = command.match(/pisque (\d+|um|dois|três|quatro|cinco|seis|sete|oito|nove|dez) vezes/);
-
-                    if (matches) {
-                        let times = matches[1];
-
-                        // Se for uma palavra, converte para número
-                        if (isNaN(times)) {
-                            times = numberWords[times]; // Converte palavra para número
-                        } else {
-                            times = parseInt(times, 10); // Converte dígito para número
-                        }
-
-                        console.log(`Comando para piscar a luz detectado: ${times} vezes`);
-                        blinkLight(times); // Chama a função para piscar a luz
-                    } else {
-                        console.log('Comando de piscar não reconhecido corretamente.');
-                        statusDisplay.textContent = 'Comando não reconhecido. Tente "pisque [n] vezes".';
-                    }
+                // Determina a saudação e o ícone dependendo da hora do dia
+                if (hours >= 6 && hours < 12) {
+                    greeting = 'Bom dia!';
+                    icon = '☀️'; // Sol
+                } else if (hours >= 12 && hours < 18) {
+                    greeting = 'Boa tarde!';
+                    icon = '☀️'; // Sol
                 } else {
-                    console.log('Comando não reconhecido para controle de luz');
-                    statusDisplay.textContent = 'Comando não reconhecido. Tente "ligar", "desligar" ou "pisque [n] vezes".';
+                    greeting = 'Boa noite!';
+                    icon = '🌙'; // Lua
                 }
 
-                // Verifique o estado da luz após o comando
-                console.log('Estado da luz após comando:', isLightOn);
-            };
-
-            // Função para fazer a luz piscar
-            function blinkLight(times) {
-                let blinkCount = 0;
-
-                function blink() {
-                    if (blinkCount < times) {
-                        turnOffLight(); // Desliga a luz
-                        setTimeout(() => {
-                            turnOnLight(); // Liga a luz
-                            blinkCount++;
-                            setTimeout(blink, 500); // Aguarda 500ms antes de piscar novamente
-                        }, 500);
-                    } else {
-                        console.log(`Luz piscou ${times} vezes`);
-                    }
-                }
-
-                blink(); // Inicia o processo de piscar
+                // Exibe a saudação e o ícone
+                document.getElementById('timeOfDay').textContent = greeting;
+                document.getElementById('sunMoonIcon').textContent = icon;
             }
 
+            // Atualiza a hora a cada minuto
+            setInterval(updateTimeAndGreeting, 60000);
+            updateTimeAndGreeting(); // Chama a função na primeira vez para já exibir a hora ao carregar
 
-            recognition.onend = function () {
-                statusDisplay.textContent = 'Pronto para ouvir...'; // Feedback que terminou de ouvir
-            };
-
-            recognition.onerror = function (event) {
-                console.error('Erro no reconhecimento de voz:', event.error);
-                statusDisplay.textContent = 'Erro ao ouvir: ' + event.error; // Mostra erro se houver
-            };
-
-            // Inicia o reconhecimento
-            try {
-                recognition.start();
-            } catch (err) {
-                console.error('Erro ao iniciar o reconhecimento de voz:', err);
-                statusDisplay.textContent = 'Erro ao iniciar: ' + err.message;
-            }
+            // Aqui você pode adicionar o código para buscar a temperatura do sensor (DHT22) e exibi-la
+            // Vou deixar o valor inicial da temperatura como 22°C, mas você deve integrar o sensor com o servidor
+            document.getElementById('temperatureDisplay').textContent = '22°C'; // Exemplo
         });
     </script>
-
 </body>
-
 </html>

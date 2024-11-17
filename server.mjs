@@ -32,51 +32,65 @@ function sendNotification(title, body) {
     return fetch(url, options).then(response => response.json());
 }
 
-// Rota para ligar/desligar o LED
 app.post('/set-power', (req, res) => {
-    const power = req.body.power;
+    const { power, location } = req.body;
 
-    // Envia o comando para o Arduino
-    if (power === 'on') {
-        arduinoPort.write('ON\n', (err) => {
-            if (err) {
-                return res.status(500).json({ status: 'Erro ao enviar o comando ON para o Arduino' });
-            }
-            res.json({ status: 'LED ligado' });
-        });
-    } else if (power === 'off') {
-        arduinoPort.write('OFF\n', (err) => {
-            if (err) {
-                return res.status(500).json({ status: 'Erro ao enviar o comando OFF para o Arduino' });
-            }
-            res.json({ status: 'LED desligado' });
-        });
+    let command = '';
+    if (location === 'quarto') {
+        command = power === 'on' ? 'ON_quarto' : 'OFF_quarto';
+    } else if (location === 'sala') {
+        command = power === 'on' ? 'ON_sala' : 'OFF_sala';
+    } else if (location === 'banheiro') {
+        command = power === 'on' ? 'ON_banheiro' : 'OFF_banheiro';
+    } else if (location === 'cozinha') {
+        command = power === 'on' ? 'ON_cozinha' : 'OFF_cozinha';
     }
+
+    console.log('Comando enviado para o Arduino:', command);  // Adicione este log
+
+    arduinoPort.write(command + '\n', (err) => {
+        if (err) {
+            return res.status(500).json({ status: 'Erro ao enviar o comando para o Arduino' });
+        }
+        res.json({ status: `${location.charAt(0).toUpperCase() + location.slice(1)} LED ${power === 'on' ? 'ligado' : 'desligado'}` });
+    });
 });
 
-// Rota para ajustar a intensidade do LED
+// Rota para ajustar a intensidade de um LED específico
 app.post('/set-intensity', (req, res) => {
-    const intensity = req.body.intensity;
+    const { intensity, location } = req.body;
 
-    // Envia o valor da intensidade para o Arduino (ex: PWM para controle de intensidade)
-    arduinoPort.write(`${intensity}\n`, (err) => {
+    let command = '';
+    if (location === 'quarto') {
+        command = `INTENSITY_quarto ${intensity}`;
+    } else if (location === 'sala') {
+        command = `INTENSITY_sala ${intensity}`;
+    } else if (location === 'banheiro') {
+        command = `INTENSITY_banheiro ${intensity}`;
+    } else if (location === 'cozinha') {
+        command = `INTENSITY_cozinha ${intensity}`;
+    }
+
+    console.log(`Comando de intensidade enviado para o Arduino: ${command}`);  // Log para depuração
+
+    arduinoPort.write(command + '\n', (err) => {
         if (err) {
-            return res.status(500).json({ status: 'Erro ao enviar o valor para o Arduino' });
+            return res.status(500).json({ status: 'Erro ao enviar o valor de intensidade para o Arduino' });
         }
-        res.json({ status: `Intensidade ajustada para ${intensity}` });
+        res.json({ status: `Intensidade do LED ${location} ajustada para ${intensity}` });
     });
 });
 
-// Função para monitorar o LDR
-function monitorLDR() {
-    // Envia um comando para o Arduino para obter o estado do LED
-    arduinoPort.write('GET_LED_STATE\n', (err) => {
-        if (err) {
-            console.error('Erro ao enviar comando para obter o estado do LED:', err);
-            return;
-        }
-    });
-}
+
+
+// Adicionando rota para obter temperatura
+app.get('/get-temperature', (req, res) => {
+    // Aqui, você integraria o código para ler o sensor DHT22 e obter a temperatura
+    // Este é apenas um exemplo de resposta:
+    const temperature = 25; // Exemplo estático
+    res.json({ temperature });
+});
+
 
 // Evento para receber dados do Arduino
 arduinoPort.on('data', (data) => {
@@ -111,7 +125,7 @@ arduinoPort.on('data', (data) => {
 
 // Rota para enviar a notificação
 app.post('/send-notification', (req, res) => {
-    sendNotification('Registro de Saída', 'Seu filho acabou de sair de casa.')
+    sendNotification('Registro de Saída', 'Seu filho está se acalmando.')
         .then(data => res.json({ success: true, data }))
         .catch(error => {
             console.error('Erro ao enviar notificação:', error);

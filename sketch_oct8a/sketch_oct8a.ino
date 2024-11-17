@@ -1,4 +1,4 @@
-int ledPin = 13;  // Pino digital para o LED
+int ledPin = 3;  // Pino digital para o LED
 bool ledOn = false;
 
 void setup() {

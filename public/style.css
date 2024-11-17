@@ -1,164 +1,57 @@
-/* Estilos de corpo */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: "Poppins", sans-serif;
+}
+.menu {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    background: linear-gradient(to bottom right, #89CFF0, #f0e68c);
-    color: #fff;
-    overflow: hidden;
 }
-
-/* Título com animação de entrada */
-h1 {
-    font-size: 34px;
-    color: #005f73;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-    animation: fadeInDown 1s ease-out;
-}
-
-/* Container com sombra e animação */
-.container {
-    background-color: rgba(255, 255, 255, 0.8);
+.horatemp{
+    border: 2px solid black;
+    background-color: aqua;
+    width: 40%;
+    height: 150px;
     border-radius: 15px;
-    padding: 30px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    animation: scaleUp 1.2s ease-out;
+    display: flex;
 }
 
-/* Animação de botões com efeito ao passar o mouse */
-button {
-    width: 100%;
-    padding: 15px;
-    font-size: 18px;
-    cursor: pointer;
-    margin: 15px 0;
-    border: none;
-    border-radius: 8px;
-    background-color: #028090;
+#timeContainer{
+ font-weight: bold;
+ font-size: 80px;
+ margin-left: 15px;
+ color: white;
+ display: flex;
+}
+.horatemp #timeContainer #temperatureDisplay{
+    font-weight: bold;
+    font-size: 40px;
+    margin-left: 100px;
+    margin-top: 50px;
     color: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+   }
+
+#greetingContainer {
+    color: white;
+    display: flex;
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 90px;
+    margin-left: -450px;
 }
-
-button:focus {
-    outline: 3px solid #ffd166;
+#columns{
+    margin-left: 350px;
+    border-radius: 15px;
+    width: 50%;
+    background-color: white;
+    border: 2px solid black;
 }
-
-button:hover {
-    background-color: #00a896;
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+#infoColumn{
+    margin-left: 15px;
 }
-
-button:active {
-    transform: translateY(1px);
-}
-
-/* Animação e estilo do slider */
-.slider-container {
-    margin-top: 20px;
-}
-
-input[type="range"] {
-    width: 100%;
-    margin: 10px 0;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 8px;
-    background: #00796b;
-    outline: none;
-    border-radius: 4px;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #ffd166;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-    background-color: #ffcc00;
-}
-
-/* Estilos de status */
-#status, #spokenCommand {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #005f73;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Estilo e animação do feedback */
-.feedback {
-    background-color: #ffdd57;
-    padding: 10px;
-    border-radius: 8px;
-    margin-top: 20px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-    opacity: 0;
-    transform: translateY(-20px);
-    animation: fadeInUp 0.5s forwards;
-}
-
-/* Animações */
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes scaleUp {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 24px;
-    }
-
-    .container {
-        padding: 20px;
-    }
-
-    button {
-        font-size: 16px;
-        padding: 12px;
-    }
+#voiceControlButton {
+    border: none;
+    background-color: green;
+    margin-left: 450px;
+    margin-top: -100px;
 }
