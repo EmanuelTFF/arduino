@@ -55,7 +55,7 @@ function getTemperature() {
         .then(response => response.json())
         .then(data => {
             const temperatureDisplay = document.getElementById('temperatureDisplay');
-            temperatureDisplay.innerHTML = `Temperatura: ${data.temperature}°C`;
+            temperatureDisplay.innerHTML = `${data.temperature}°C`;
         })
         .catch(error => console.error('Erro ao obter a temperatura:', error));
 }

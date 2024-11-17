@@ -1,57 +1,281 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-*{
-    font-family: "Poppins", sans-serif;
-}
-.menu {
-    display: flex;
-}
-.horatemp{
-    border: 2px solid black;
-    background-color: aqua;
-    width: 40%;
-    height: 150px;
-    border-radius: 15px;
-    display: flex;
+body,
+html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    width: 100%;
 }
 
-#timeContainer{
- font-weight: bold;
- font-size: 80px;
- margin-left: 15px;
- color: white;
- display: flex;
-}
-.horatemp #timeContainer #temperatureDisplay{
-    font-weight: bold;
-    font-size: 40px;
-    margin-left: 100px;
-    margin-top: 50px;
-    color: white;
-    display: flex;
-   }
+/* CELULAR */
+@media (max-width: 768px) {
+    * {
+        font-family: "Poppins", sans-serif;
+        box-sizing: border-box;
+    }
 
-#greetingContainer {
-    color: white;
-    display: flex;
-    font-weight: bold;
-    font-size: 20px;
-    margin-top: 90px;
-    margin-left: -450px;
-}
-#columns{
-    margin-left: 350px;
-    border-radius: 15px;
-    width: 50%;
-    background-color: white;
-    border: 2px solid black;
-}
-#infoColumn{
-    margin-left: 15px;
-}
-#voiceControlButton {
-    border: none;
-    background-color: green;
-    margin-left: 450px;
-    margin-top: -100px;
+    #currentTime {
+        text-align: center;
+        font-size: 50px;
+        font-weight: bold;
+        color: white;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        padding: 20px;
+        transition: background-color 1s, background-image 1s;
+        /* Transição suave */
+        background-color: #2C3E50;
+    }
+
+    #greeting {
+        margin-top: 10px;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Manhã */
+    .morning {
+        background-color: #ccfcff;
+        color: black;
+        /* Cor suave para manhã */
+    }
+
+    /* Tarde */
+    .afternoon {
+        background-color: #FF6F3C;
+        color: white;
+        /* Cor quente para tarde */
+    }
+
+    /* Noite */
+    .night {
+        background-color: #2C3E50;
+        color: white
+        /* Cor fria para noite */
+    }
+
+
+    #temperatureDisplay {
+        align-items: center;
+        text-align: center;
+        font-weight: bold;
+        font-size: 25px;
+    }
+
+    #controlColumn {
+        margin-top: 50px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    #controlColumn img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    /* Ajuste das imagens para ocupar toda a largura */
+    #controlColumn {
+        position: relative;
+        width: 100%;
+    }
+
+    #controlColumn img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    /* Estilizando os botões de lâmpada */
+    #powerButtons {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        pointer-events: none;
+        /* Impede interação com a imagem ao redor */
+    }
+
+    /* Estilo base dos botões */
+    .lightButton {
+        background-color: #2C3E50;
+        /* Azul escuro */
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        /* Largura do botão */
+        height: 50px;
+        /* Altura do botão (igual a largura para circular) */
+        display: flex;
+        /* Flexbox para centralizar o conteúdo */
+        justify-content: center;
+        /* Centraliza o ícone horizontalmente */
+        align-items: center;
+        /* Centraliza o ícone verticalmente */
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        pointer-events: auto;
+        /* Permite interação com o botão */
+    }
+
+
+    .lightButton:hover {
+        background-color: #34495E;
+        /* Um tom mais claro ao passar o mouse */
+    }
+
+    /* Quando o botão está ativo (ligado) */
+    .lightButton.active {
+        background-color: #27AE60;
+        /* Verde quando ativo */
+    }
+
+    /* Alinhar os botões sobre as imagens */
+    #powerButtons button {
+        position: absolute;
+    }
+
+    /* Posicionar cada botão em cima das partes da casa */
+    #powerButtonCozinha {
+        top: 12%;
+        /* Ajuste a posição de acordo com a imagem */
+        left: 12%;
+    }
+
+    #powerButtonSala {
+        top: 10%;
+        left: 55%;
+    }
+
+    #powerButtonQuarto {
+        top: 70%;
+        left: 20%;
+    }
+
+    #powerButtonBanheiro {
+        top: 75%;
+        left: 50%;
+    }
+
+
+    #voiceControlButton {
+        background-color: #2C3E50;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 125px;
+        height: 125px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 48px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        pointer-events: auto;
+        margin-left: 130px;
+        margin-top: 50px;
+    }
+
+    #voiceControlButton.active {
+        background-color: #27ae60;
+        /* Verde quando ativo (ouvindo) */
+    }
+
+    #status {
+        text-align: center;
+    }
+
+    #spokenCommand {
+        text-align: center;
+    }
+
+    #musicVoiceColumn {
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Centraliza os itens horizontalmente */
+        justify-content: center;
+        /* Centraliza os itens verticalmente */
+        text-align: center;
+        /* Alinha o texto ao centro */
+        /* Garante que ocupe toda a altura da tela */
+        gap: 20px;
+        /* Adiciona espaço entre os itens */
+    }
+
+    #playPauseMusic {
+        background-color: #2C3E50;
+        /* Azul escuro */
+        color: white;
+        border: none;
+        width: 120px;
+        height: 60px;
+        font-size: 15px;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: auto;
+        font-weight: bold
+    }
+
+    #volumeControl {
+        width: 80%;
+        max-width: 300px;
+        margin: 10px 0;
+    }
+
+    #acalmarButton {
+        background-color: #cf3838;
+        /* Azul escuro */
+        color: white;
+        border: none;
+        width: 90%;
+        height: 150px;
+        font-size: 32px;
+        margin-bottom: 15px;
+        font-weight: bold;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: auto;
+    }
+    #reminderSection {
+        align-items: center;
+        text-align: center;
+    }
+    #reminderInput {
+        width: 350px;
+        height: 60px;
+    }
+    #sendReminderButton{
+        background-color: #2C3E50;
+        color: white;
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        width: 250px;
+        height: 60px;
+        border-radius: 15px;
+        font-size: 24px;
+        margin-top: 15px;
+    }
 }

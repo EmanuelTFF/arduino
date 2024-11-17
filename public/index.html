@@ -1,65 +1,66 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Luz</title>
+    <title>Casa Inteligente</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
     <section class="menu">
-    <section class="horatemp">
-        <div id="timeContainer">
-            <!-- Exibir Hora -->
-            <div id="currentTime">Carregando hora...</div>
-
-            <!-- Exibir Temperatura -->
-            <div id="temperatureDisplay">0°C</div>
-        </div>    
-    </section>
-    <div id="greetingContainer">
-        <!-- Saudação e Ícone -->
-        <div id="timeOfDay">Bom dia!</div>
-        <div id="sunMoonIcon">☀️</div>
-    </div>
-        <div id="columns">
-            <!-- Coluna 1: Informações -->
-            <div id="infoColumn">
-                <h2>Informações</h2>
-                <div id="status">Pronto para ouvir...</div>
-                <div id="spokenCommand">Você disse: </div>           
+        <section class="horatemp">
+            <div id="timeContainer">
+                <div id="currentTime">Carregando hora...</div>
+                <div id="temperatureDisplay">0°C</div>
             </div>
-            <button id="voiceControlButton"><img src="img/micicon.png" alt=""></button>
         </section>
-        <main>
-            <!-- Coluna 2: Imagens e Botões de Ligar/Desligar -->
-            <div id="controlColumn">
-                <h2>Controle de Luz</h2>
-                <img src="img/cozinhasala.jpeg" alt="Imagem Casa" id="casaImagem">
-                <img src="img/quartobanheiro.jpeg" alt="Imagem Casa" id="casaImagem">
-                <!-- Botões para ligar/desligar LEDs -->
-                <div id="powerButtons">
-                    <button id="powerButtonQuarto">Ligar LED Quarto</button>
-                    <button id="powerButtonSala">Ligar LED Sala</button>
-                    <button id="powerButtonBanheiro">Ligar LED Banheiro</button>
-                    <button id="powerButtonCozinha">Ligar LED Cozinha</button>
-                </div>
-            </div>
-            <!-- Coluna 3: Controles de Música, Voz e Acalmar -->
-            <div id="musicVoiceColumn">
-                <h2>Controles</h2>
-                <!-- Botão para controlar a música -->
-                <button id="playPauseMusic">Tocar Música</button>
-                <input type="range" id="volumeControl" value="50" max="100"> <!-- Controle de volume -->
+    </section>
 
-                <!-- Botão para acalmar -->
-                <button id="acalmarButton">Acalmar</button>
+    <div id="controlColumn">
+        <img src="img/cozinhasala.jpeg" alt="Imagem Casa" id="casaImagem">
+        <img src="img/quartobanheiro.jpeg" alt="Imagem Casa" id="casaImagem">
 
-                <!-- Botão para ativar o controle por voz -->
-                
+        <div id="powerButtons">
+            <button id="powerButtonCozinha" class="lightButton">
+                <i class="fas fa-lightbulb"></i>
+            </button>
+            <button id="powerButtonSala" class="lightButton">
+                <i class="fas fa-lightbulb"></i>
+            </button>
+            <button id="powerButtonQuarto" class="lightButton">
+                <i class="fas fa-lightbulb"></i>
+            </button>
+            <button id="powerButtonBanheiro" class="lightButton">
+                <i class="fas fa-lightbulb"></i>
+            </button>
+        </div>
+    </div>
+    <div id="reminderSection">
+        <h3>Enviar Lembrete</h3>
+        <input type="text" id="reminderInput" placeholder="Digite seu lembrete"><br>
+        <button id="sendReminderButton">Enviar</button>
+    </div>
+    <section class="voice">
+        <div id="columns">
+            <button id="voiceControlButton" class="lightButton">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <div id="infoColumn">
+                <div id="status">Pronto para ouvir...</div>
+                <div id="spokenCommand">Você disse: </div>
             </div>
         </div>
-    </main>
+    </section>
+
+    <div id="musicVoiceColumn">
+        <button id="playPauseMusic">Tocar Música</button>
+        <input type="range" id="volumeControl" value="50" max="100">
+        <button id="acalmarButton">Acalmar!</button>
+    </div>
+    </div>
 
     <script src="controleLuz.js"></script>
     <script src="controleVoz.js"></script>
@@ -80,57 +81,87 @@
                         'Content-Type': 'application/json',
                     },
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        statusDisplay.textContent = 'Notificação enviada com sucesso!';
-                    } else {
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            statusDisplay.textContent = 'Notificação enviada com sucesso!';
+                        } else {
+                            statusDisplay.textContent = 'Erro ao enviar notificação.';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao enviar notificação:', error);
                         statusDisplay.textContent = 'Erro ao enviar notificação.';
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao enviar notificação:', error);
-                    statusDisplay.textContent = 'Erro ao enviar notificação.';
-                });
+                    });
             });
 
             // Função para atualizar a hora, saudação e temperatura
-            function updateTimeAndGreeting() {
+            function updateTime() {
                 const now = new Date();
                 const hours = now.getHours();
                 const minutes = now.getMinutes();
 
                 const timeString = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
                 document.getElementById('currentTime').textContent = timeString;
-
-                let greeting = '';
-                let icon = '';
-
-                // Determina a saudação e o ícone dependendo da hora do dia
-                if (hours >= 6 && hours < 12) {
-                    greeting = 'Bom dia!';
-                    icon = '☀️'; // Sol
-                } else if (hours >= 12 && hours < 18) {
-                    greeting = 'Boa tarde!';
-                    icon = '☀️'; // Sol
-                } else {
-                    greeting = 'Boa noite!';
-                    icon = '🌙'; // Lua
-                }
-
-                // Exibe a saudação e o ícone
-                document.getElementById('timeOfDay').textContent = greeting;
-                document.getElementById('sunMoonIcon').textContent = icon;
             }
 
-            // Atualiza a hora a cada minuto
-            setInterval(updateTimeAndGreeting, 60000);
-            updateTimeAndGreeting(); // Chama a função na primeira vez para já exibir a hora ao carregar
+            // Atualizar a hora ao carregar a página e a cada minuto
+            updateTime();
+            setInterval(updateTime, 60000);
 
-            // Aqui você pode adicionar o código para buscar a temperatura do sensor (DHT22) e exibi-la
-            // Vou deixar o valor inicial da temperatura como 22°C, mas você deve integrar o sensor com o servidor
-            document.getElementById('temperatureDisplay').textContent = '22°C'; // Exemplo
+            // Configurar temperatura inicial (pode ser atualizada via servidor ou sensor futuramente)
+            document.getElementById('temperatureDisplay').textContent = '22°C'; // Valor estático como exemplo
+        });
+
+        const currentTimeDiv = document.getElementById("currentTime")
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.lightButton');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Alterna a classe 'active' para ativar ou desativar o botão
+                    button.classList.toggle('active');
+                });
+            });
+        });
+        document.getElementById('voiceControlButton').addEventListener('click', function () {
+            const button = this;
+
+            // Verificar se está ativo (ouvindo)
+            if (button.classList.contains('active')) {
+                button.classList.remove('active');
+                // Adicione a lógica para parar de ouvir aqui, se necessário
+            } else {
+                button.classList.add('active');
+                // Adicione a lógica para iniciar a escuta aqui, se necessário
+            }
+        });
+        document.getElementById('sendReminderButton').addEventListener('click', function () {
+            const reminder = document.getElementById('reminderInput').value;
+
+            if (!reminder) {
+                alert('Por favor, insira um lembrete.');
+                return;
+            }
+
+            fetch('/send-reminder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ reminder: reminder })  // Envia o lembrete para o servidor
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.status);  // Exibe a resposta do servidor
+            })
+            .catch(error => {
+                console.error('Erro ao enviar lembrete:', error);
+                alert('Erro ao enviar lembrete.');
+            });
         });
     </script>
 </body>
+
 </html>

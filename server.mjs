@@ -133,8 +133,24 @@ app.post('/send-notification', (req, res) => {
         });
 });
 
-// Inicia a monitoração do LDR a cada 5 segundos
-setInterval(monitorLDR, 5000);
+
+app.post('/send-reminder', (req, res) => {
+    const { reminder } = req.body;  // Recebe o lembrete do corpo da requisição
+
+    if (!reminder) {
+        return res.status(400).json({ error: 'Lembrete não especificado.' });
+    }
+
+    const command = `LEMBRETE:${reminder}`;  // Formata o comando
+
+    // Envia o comando via serial
+    arduinoPort.write(command + '\n', (err) => {
+        if (err) {
+            return res.status(500).json({ status: 'Erro ao enviar o lembrete para o Arduino' });
+        }
+        res.json({ status: `Lembrete enviado: ${reminder}` });
+    });
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
