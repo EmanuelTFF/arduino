@@ -1,4 +1,4 @@
-const audioElement = new Audio('musica-relaxante.mp3');
+const audioElement = new Audio('audio/asereje.mp3');
 const playPauseButton = document.getElementById('playPauseMusic');
 const volumeControl = document.getElementById('volumeControl');
 
@@ -20,10 +20,10 @@ volumeControl.addEventListener('input', (event) => {
 });
 
 // Função para acalmar (reduzir luz e tocar música relaxante)
-document.getElementById('calmButton').addEventListener('click', () => {
-    // Diminuir intensidade das luzes
-    sendRequest('/set-intensity', { location: 'quarto', intensity: 50 }); // Apenas um exemplo, ajustar conforme necessário
-    sendRequest('/set-intensity', { location: 'sala', intensity: 50 });
+calmButton.addEventListener('click', () => {
+    // Diminuir intensidade das luzes (exemplo, ajuste conforme necessário)
+    sendRequest('/set-intensity', { location: 'quarto', intensity: 50 }); // Ajuste para o quarto
+    sendRequest('/set-intensity', { location: 'sala', intensity: 50 });   // Ajuste para a sala
 
     // Tocar música relaxante
     audioElement.play();
@@ -34,3 +34,17 @@ document.getElementById('calmButton').addEventListener('click', () => {
         .then(data => console.log('Notificação enviada', data))
         .catch(error => console.error('Erro ao enviar notificação', error));
 });
+
+// Função para enviar uma requisição de controle (ajustar intensidade)
+function sendRequest(url, data) {
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+        .then(response => response.json())
+        .then(data => console.log('Requisição bem-sucedida', data))
+        .catch(error => console.error('Erro na requisição', error));
+}

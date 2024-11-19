@@ -142,15 +142,18 @@ app.post('/send-reminder', (req, res) => {
     }
 
     const command = `LEMBRETE:${reminder}`;  // Formata o comando
+    console.log(`Enviando comando: ${command}`);  // Log para depuração
 
     // Envia o comando via serial
     arduinoPort.write(command + '\n', (err) => {
         if (err) {
+            console.error(`Erro ao enviar comando: ${err}`);  // Log do erro
             return res.status(500).json({ status: 'Erro ao enviar o lembrete para o Arduino' });
         }
         res.json({ status: `Lembrete enviado: ${reminder}` });
     });
 });
+
 
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
